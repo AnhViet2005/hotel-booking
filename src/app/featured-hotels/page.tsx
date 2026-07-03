@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Star, MapPin, ArrowRight, Crown } from "lucide-react";
 import Link from "next/link";
+import { formatCurrency } from "@/utils/format";
 
 export const metadata: Metadata = {
   title: "Khách Sạn Nổi Bật - CybertronHotel",
@@ -16,9 +17,7 @@ const featured = [
   { id: 6, name: "Vinpearl Luxury Nha Trang", city: "Nha Trang", rating: 4.8, reviews: 1720, price: 4200000, badge: "Ven biển", img: "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?w=600&q=80" },
 ];
 
-function formatCurrency(n: number) {
-  return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(n);
-}
+
 
 export default function FeaturedHotelsPage() {
   return (

@@ -36,7 +36,7 @@ export default function DestinationsPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {destinations.map((dest) => (
-            <Link href={`/?destination=${encodeURIComponent(dest.name)}`} key={dest.name}
+            <Link href={`/search?location=${encodeURIComponent(dest.name)}`} key={dest.name}
               className="group bg-card rounded-3xl overflow-hidden border border-border shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
               <div className="relative h-56 overflow-hidden">
                 {/* eslint-disable-next-line @next/next/no-img-element */}

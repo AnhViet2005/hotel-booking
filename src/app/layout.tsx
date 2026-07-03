@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
 import Navbar from "@/components/header/Navbar";
 import Footer from "@/components/footer/Footer";
+import ChatAI from "@/components/chat/ChatAI";
 import "./globals.css";
 
 const inter = Inter({
@@ -35,6 +36,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <ChatAI />
       </body>
     </html>
   );

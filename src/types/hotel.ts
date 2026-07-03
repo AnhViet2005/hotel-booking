@@ -25,6 +25,8 @@ export interface Hotel {
   description: string;
   amenities: string[];
   rooms: Room[];
+  ownerId?: number;
+  ownerName?: string;
 }
 
 export interface Booking {

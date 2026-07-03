@@ -72,6 +72,7 @@ export async function loginUser(data: LoginRequest): Promise<AuthResponse> {
 export function saveAuth(data: AuthResponse) {
   localStorage.setItem("token", data.token);
   localStorage.setItem("user", JSON.stringify({ 
+    id: data.id,
     email: data.email, 
     fullName: data.fullName, 
     role: data.role,
@@ -83,7 +84,7 @@ export function getToken(): string | null {
   return localStorage.getItem("token");
 }
 
-export function getUser(): { email: string; fullName: string; role: string; phone: string } | null {
+export function getUser(): { id: number; email: string; fullName: string; role: string; phone: string } | null {
   const u = localStorage.getItem("user");
   return u ? JSON.parse(u) : null;
 }
@@ -156,7 +157,8 @@ export async function updateSettings(data: FormData): Promise<any> {
 
 export interface BookingRequest {
   hotelId: number;
-  roomTypeId: number;
+  roomTypeId?: number;
+  rooms?: { roomTypeId: number; quantity: number }[];
   checkIn: string;
   checkOut: string;
   guestName?: string;
@@ -207,6 +209,34 @@ export async function createReview(data: { bookingId: number; rating: number; co
   });
 }
 
+export async function updateReview(id: number, data: { rating: number; comment: string }): Promise<any> {
+  return authFetch(`/reviews/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function deleteReview(id: number): Promise<void> {
+  return authFetch(`/reviews/${id}`, {
+    method: "DELETE",
+  });
+}
+
+// ─── Notifications ───────────────────────────────────────────────────────────
+export async function getUserNotifications(): Promise<any[]> {
+  return authFetch("/user/notifications");
+}
+
+export async function getUnreadNotificationCount(): Promise<number> {
+  return authFetch("/user/notifications/unread-count");
+}
+
+export async function markNotificationsAsRead(): Promise<void> {
+  return authFetch("/user/notifications/read-all", {
+    method: "PATCH",
+  });
+}
+
 export async function payRemainingBooking(id: number, method = "CASH"): Promise<UserBooking> {
   return authFetch(`/user/bookings/${id}/pay-remaining`, {
     method: "PATCH",
@@ -220,6 +250,10 @@ export async function cancelBooking(id: number): Promise<UserBooking> {
   });
 }
 
+export async function getChatHistory(receiverId: number): Promise<any[]> {
+  return authFetch(`/chat/history/${receiverId}`);
+}
+
 export interface UserProfile {
   id: number;
   fullName: string;
@@ -229,17 +263,23 @@ export interface UserProfile {
 }
 
 // ─── Public APIs ─────────────────────────────────────────────────────────────
-export async function getPublicHotels(keyword?: string): Promise<Hotel[]> {
+export async function getPublicHotels(keyword?: string, checkIn?: string, checkOut?: string): Promise<Hotel[]> {
   const url = new URL(`${API_BASE_URL}/public/hotels`);
   if (keyword) url.searchParams.append("keyword", keyword);
+  if (checkIn) url.searchParams.append("checkIn", checkIn);
+  if (checkOut) url.searchParams.append("checkOut", checkOut);
   
   const res = await fetch(url.toString());
   if (!res.ok) throw new Error("Failed to fetch hotels");
   return res.json();
 }
 
-export async function getPublicHotelById(id: string | number): Promise<Hotel> {
-  const res = await fetch(`${API_BASE_URL}/public/hotels/${id}`);
+export async function getPublicHotelById(id: string | number, checkIn?: string, checkOut?: string): Promise<Hotel> {
+  const url = new URL(`${API_BASE_URL}/public/hotels/${id}`);
+  if (checkIn) url.searchParams.append("checkIn", checkIn);
+  if (checkOut) url.searchParams.append("checkOut", checkOut);
+  
+  const res = await fetch(url.toString());
   if (!res.ok) throw new Error("Failed to fetch hotel details");
   return res.json();
 }
@@ -247,6 +287,7 @@ export async function getPublicHotelById(id: string | number): Promise<Hotel> {
 export interface HotelReview {
   id: number;
   userName: string;
+  userEmail?: string;
   userAvatar?: string;
   rating: number;
   comment: string;
@@ -259,6 +300,13 @@ export async function getHotelReviews(hotelId: string | number): Promise<HotelRe
   if (!res.ok) return [];
   return res.json();
 }
+
+export async function getPublicBanners(): Promise<any[]> {
+  const res = await fetch(`${API_BASE_URL}/public/banners`);
+  if (!res.ok) return [];
+  return res.json();
+}
+
 
 import { Hotel } from "@/types/hotel";
 

@@ -4,6 +4,7 @@ import { Suspense, useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { getPublicHotelById, createBooking, getUser, confirmBooking } from "@/utils/api";
+import { formatCurrency } from "@/utils/format";
 import { Hotel, Room } from "@/types/hotel";
 import { Button } from "@/components/ui/Button";
 import PaymentForm from "@/components/order/PaymentForm";
@@ -14,19 +15,18 @@ function CheckoutContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const rawHotelId = searchParams.get("hotelId");
-  const rawRoomId = searchParams.get("roomId");
+  const rawRoomsParam = searchParams.get("rooms"); // New format: "id1:qty1,id2:qty2"
   const checkIn = searchParams.get("checkIn");
   const checkOut = searchParams.get("checkOut");
   const adults = searchParams.get("adults") || "2";
   const children = searchParams.get("children") || "0";
-  const rooms = searchParams.get("rooms") || "1";
   
   const [hotel, setHotel] = useState<Hotel | null>(null);
-  const [room, setRoom] = useState<Room | null>(null);
+  const [selectedRooms, setSelectedRooms] = useState<{room: Room, quantity: number}[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!rawHotelId || !rawRoomId) {
+    if (!rawHotelId || !rawRoomsParam) {
       setLoading(false);
       return;
     }
@@ -35,16 +35,23 @@ function CheckoutContent() {
     getPublicHotelById(rawHotelId)
       .then((data) => {
         setHotel(data);
-        const foundRoom = data.rooms?.find(r => r.id.toString() === rawRoomId);
-        setRoom(foundRoom || null);
+        // Parse "id:qty,id:qty"
+        const roomPairs = rawRoomsParam.split(",");
+        const selections = roomPairs.map(pair => {
+            const [id, qty] = pair.split(":");
+            const foundRoom = data.rooms?.find(r => r.id.toString() === id);
+            return foundRoom ? { room: foundRoom, quantity: parseInt(qty) } : null;
+        }).filter((item): item is {room: Room, quantity: number} => item !== null);
+        
+        setSelectedRooms(selections);
       })
       .catch((err) => {
         console.error("Failed to load hotel", err);
         setHotel(null);
-        setRoom(null);
+        setSelectedRooms([]);
       })
       .finally(() => setLoading(false));
-  }, [rawHotelId, rawRoomId]);
+  }, [rawHotelId, rawRoomsParam]);
 
   if (loading) {
     return (
@@ -55,11 +62,11 @@ function CheckoutContent() {
     );
   }
 
-  if (!hotel || !room) {
+  if (!hotel || selectedRooms.length === 0) {
     return (
       <div className="min-h-screen pt-32 pb-12 flex flex-col items-center justify-center text-center">
-        <h1 className="text-3xl font-bold mb-4">Oops! Invalid booking request.</h1>
-        <Button onClick={() => router.push("/")}>Return Home</Button>
+        <h1 className="text-3xl font-bold mb-4">Ops! Yêu cầu đặt phòng không hợp lệ.</h1>
+        <Button onClick={() => router.push("/")}>Quay lại trang chủ</Button>
       </div>
     );
   }
@@ -72,9 +79,9 @@ function CheckoutContent() {
   };
 
   const nights = getNights();
-  const roomCount = parseInt(rooms);
-  const tax = 100000; // Fixed tax for now to match hotel details page
-  const total = (room.price * nights * roomCount) + tax;
+  const tax = 100000;
+  const subtotal = selectedRooms.reduce((sum, item) => sum + (item.room.price * item.quantity), 0) * nights;
+  const total = subtotal + tax;
 
   const handlePay = async (e: React.FormEvent, method: string) => {
     e.preventDefault();
@@ -86,23 +93,20 @@ function CheckoutContent() {
 
       const bookingId = await createBooking({
         hotelId: Number(hotel.id),
-        roomTypeId: Number(room.id),
+        rooms: selectedRooms.map(s => ({ roomTypeId: s.room.id, quantity: s.quantity })),
         checkIn: checkIn || today.toISOString().split("T")[0],
         checkOut: checkOut || tomorrow.toISOString().split("T")[0],
         guestName: user?.fullName || "Khách",
         guestEmail: user?.email || "",
         guestPhone: "0123456789",
-        quantity: roomCount
       });
 
       if (method === "CASH") {
-        // For cash, we confirm immediately (Pay at Property)
         await confirmBooking(bookingId);
         router.push("/dashboard/bookings?success=true");
         return;
       }
 
-      // VNPAY Logic
       const depositAmount = Math.round(total * 0.3);
       const returnUrl = encodeURIComponent(`${window.location.origin}/payment-result`);
       const res = await fetch(`http://localhost:4000/payment?amount=${depositAmount}&orderInfo=Booking_${bookingId}&returnUrl=${returnUrl}`);
@@ -134,14 +138,24 @@ function CheckoutContent() {
           </div>
 
           <div className="w-full lg:w-96 flex-shrink-0">
-            <BookingSummary 
-              hotel={hotel} 
-              room={room} 
-              tax={tax} 
-              total={total} 
-              nights={nights}
-              quantity={roomCount}
-            />
+             {/* Note: Update BookingSummary component to handle multiple rooms if necessary, or just show aggregate */}
+             <div className="bg-card rounded-3xl p-6 border border-border shadow-lg space-y-6">
+                <h3 className="font-bold text-xl mb-4">Tổng quan đơn hàng</h3>
+                {selectedRooms.map((item, idx) => (
+                  <div key={idx} className="flex justify-between items-center text-sm">
+                    <span>{item.room.name} (x{item.quantity})</span>
+                    <span className="font-bold">{formatCurrency(item.room.price * item.quantity * nights)}</span>
+                  </div>
+                ))}
+                <div className="border-t border-dashed pt-4 flex justify-between font-medium text-muted-foreground">
+                   <span>Thuế & phí</span>
+                   <span>{formatCurrency(tax)}</span>
+                </div>
+                <div className="border-t pt-4 flex justify-between items-center">
+                   <span className="font-bold">Tổng cộng</span>
+                   <span className="text-2xl font-bold text-accent-600">{formatCurrency(total)}</span>
+                </div>
+             </div>
           </div>
         </div>
       </div>

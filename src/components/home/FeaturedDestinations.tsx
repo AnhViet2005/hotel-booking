@@ -1,14 +1,38 @@
-import Image from "next/image";
-import Link from "next/link";
+"use client";
 
-const FEATURED_HOTELS = [
-  { name: "The Azure Resort", location: "Maldives", img: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=800&q=80", link: "/hotel/h1" },
-  { name: "Eiffel View Boutique", location: "Paris", img: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800&q=80", link: "/hotel/h5" },
-  { name: "Villa Serenity", location: "Bali", img: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800&q=80", link: "/hotel/h3" },
-  { name: "Santorini Cliff", location: "Santorini", img: "https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?w=800&q=80", link: "/hotel/h4" },
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { getPublicBanners } from "@/utils/api";
+
+const STATIC_FEATURED = [
+  { title: "Sapa", subtitle: "Lào Cai, Việt Nam", imageUrl: "https://images.unsplash.com/photo-1598285521151-c4391694f488?w=800&q=80", linkUrl: "" },
+  { title: "Đà Lạt", subtitle: "Lâm Đồng, Việt Nam", imageUrl: "https://images.unsplash.com/photo-1549474843-ed839ec15f91?w=800&q=80", linkUrl: "" },
+  { title: "Phú Quốc", subtitle: "Kiên Giang, Việt Nam", imageUrl: "https://images.unsplash.com/photo-1589394815804-964ed0bc2eb5?w=800&q=80", linkUrl: "" },
+  { title: "Hạ Long", subtitle: "Quảng Ninh, Việt Nam", imageUrl: "https://images.unsplash.com/photo-1528127269322-539801943592?w=800&q=80", linkUrl: "" },
 ];
 
 export default function FeaturedDestinations() {
+  const [banners, setBanners] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchBanners = async () => {
+      try {
+        const data = await getPublicBanners();
+        if (data && data.length > 0) {
+          setBanners(data);
+        } else {
+          setBanners(STATIC_FEATURED);
+        }
+      } catch (error) {
+        setBanners(STATIC_FEATURED);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBanners();
+  }, []);
+
   return (
     <section className="py-24 bg-background transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -23,16 +47,33 @@ export default function FeaturedDestinations() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {FEATURED_HOTELS.map((hotel, i) => (
-            <Link href={hotel.link} key={i} className="group relative h-80 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 block">
-              <Image src={hotel.img} alt={hotel.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-              <div className="absolute bottom-6 left-6">
-                <h3 className="text-2xl font-heading font-bold text-white mb-1">{hotel.name}</h3>
-                <p className="text-white/80 text-sm font-medium">{hotel.location}</p>
-              </div>
-            </Link>
-          ))}
+          {loading ? (
+            Array(4).fill(0).map((_, i) => (
+              <div key={i} className="h-80 rounded-2xl bg-muted animate-pulse"></div>
+            ))
+          ) : (
+            banners.map((banner, i) => {
+              const searchLink = banner.linkUrl || `/search?keyword=${encodeURIComponent(banner.title)}`;
+              return (
+                <Link 
+                  href={searchLink} 
+                  key={i} 
+                  className="group relative h-80 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 block"
+                >
+                  <img 
+                    src={banner.imageUrl} 
+                    alt={banner.title} 
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                  <div className="absolute bottom-6 left-6">
+                    <h3 className="text-2xl font-heading font-bold text-white mb-1">{banner.title}</h3>
+                    <p className="text-white/80 text-sm font-medium">{banner.subtitle}</p>
+                  </div>
+                </Link>
+              );
+            })
+          )}
         </div>
       </div>
     </section>

@@ -39,14 +39,21 @@ export default function BookingsPage() {
   const [reviewComment, setReviewComment] = useState("");
   const [submittingReview, setSubmittingReview] = useState(false);
 
+  const fetchBookings = (silent = false) => {
+    if (!silent) setLoading(true);
+    getMyBookings()
+      .then(setBookings)
+      .catch(() => { if (!silent) setError("Không thể tải lịch sử đặt phòng. Vui lòng thử lại."); })
+      .finally(() => { if (!silent) setLoading(false); });
+  };
+
   useEffect(() => {
     const u = getUser();
     if (!u) { router.push("/login"); return; }
 
-    getMyBookings()
-      .then(setBookings)
-      .catch(() => setError("Không thể tải lịch sử đặt phòng. Vui lòng thử lại."))
-      .finally(() => setLoading(false));
+    fetchBookings();
+    const interval = setInterval(() => fetchBookings(true), 10000);
+    return () => clearInterval(interval);
   }, [router]);
 
   const handleOpenDetail = (booking: UserBooking) => {
@@ -335,22 +342,32 @@ export default function BookingsPage() {
                       ))}
                     </div>
 
-                    <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5 space-y-3">
+                    <div className={`rounded-3xl border p-5 space-y-3 ${selectedBooking.remainingPaymentStatus === "PAID" ? "border-green-200 bg-green-50/50" : "border-slate-200 bg-slate-50"}`}>
+                      {selectedBooking.remainingPaymentStatus === "PAID" && (
+                        <div className="flex items-center gap-2 mb-2">
+                           <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                           <span className="text-xs font-black uppercase tracking-widest text-green-600">Đã thanh toán 100%</span>
+                        </div>
+                      )}
+                      
                       <div className="flex items-center justify-between text-sm text-muted-foreground">
-                        <span>Thanh toán cọc</span>
+                        <span>Thanh toán cọc (30%)</span>
                         <span className="font-bold text-orange-600">{formatCurrency(selectedBooking.depositAmount)}</span>
                       </div>
                       <div className="flex items-center justify-between text-sm text-muted-foreground">
-                        <span>Thanh toán còn lại</span>
+                        <span>Thanh toán còn lại (70%)</span>
                         <span className="font-bold text-green-600">{formatCurrency(selectedBooking.remainingAmount)}</span>
                       </div>
-                      <div className="flex items-center justify-between text-sm text-muted-foreground">
-                        <span>Trạng thái thanh toán 70%</span>
-                        <span className="font-semibold">{selectedBooking.remainingPaymentStatus === "PAID" ? "Đã thanh toán" : "Chưa thanh toán"}</span>
+                      <div className="flex items-center justify-between text-sm text-muted-foreground pt-2 border-t border-dashed border-green-200">
+                        <span className="font-bold text-card-foreground">Tổng cộng đã thu</span>
+                        <span className={`font-bold text-lg ${selectedBooking.remainingPaymentStatus === "PAID" ? "text-green-600" : "text-orange-600"}`}>
+                          {selectedBooking.remainingPaymentStatus === "PAID" ? formatCurrency(selectedBooking.totalAmount) : formatCurrency(selectedBooking.depositAmount)}
+                        </span>
                       </div>
+                      
                       {selectedBooking.remainingPaymentStatus === "PAID" && (
-                        <div className="text-sm text-muted-foreground">
-                          Phương thức: {selectedBooking.remainingPaymentMethod || "Không xác định"}
+                        <div className="text-[10px] font-bold text-green-700 bg-green-100/50 px-2 py-1 rounded-md inline-block">
+                          Phương thức: {selectedBooking.remainingPaymentMethod === "CASH" ? "Tiền mặt" : selectedBooking.remainingPaymentMethod || "Chuyển khoản"}
                         </div>
                       )}
                     </div>

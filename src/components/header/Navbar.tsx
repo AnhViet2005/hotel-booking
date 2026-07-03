@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { User, Menu, Globe, CalendarDays, LogOut, ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { getUser, logout, getMyProfile } from "@/utils/api";
+import NotificationBell from "./NotificationBell";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -70,7 +71,7 @@ export default function Navbar() {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-foreground/80 hover:text-accent-500 font-medium transition-colors">Điểm đến</Link>
+            <Link href="/destinations" className="text-foreground/80 hover:text-accent-500 font-medium transition-colors">Điểm đến</Link>
             <Link href="/search" className="text-foreground/80 hover:text-accent-500 font-medium transition-colors">Khách sạn</Link>
             <Link href="/partner" className="text-accent-500 hover:text-accent-600 font-bold transition-colors">Hợp tác với chúng tôi</Link>
           </div>
@@ -83,8 +84,12 @@ export default function Navbar() {
             </Link>
 
             {user ? (
-              /* User Avatar with Dropdown */
-              <div className="relative" ref={dropdownRef}>
+              /* Auth Group */
+              <div className="flex items-center gap-4">
+                <NotificationBell />
+                
+                {/* User Avatar with Dropdown */}
+                <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                   className="flex items-center gap-2 group"
@@ -125,6 +130,7 @@ export default function Navbar() {
                   </div>
                 )}
               </div>
+            </div>
             ) : (
               /* Login Button */
               <Link href="/login" className="flex items-center gap-2 bg-foreground text-background px-5 py-2.5 rounded-full shadow-xl shadow-foreground/10 hover:opacity-90 transition-all transform hover:-translate-y-0.5">
