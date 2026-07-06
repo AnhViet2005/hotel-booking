@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { MapPin, ArrowRight, Loader2, Globe } from "lucide-react";
 import Link from "next/link";
 
-export default function BlogDestinationsPage() {
+export default function BlogPostsPage() {
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 

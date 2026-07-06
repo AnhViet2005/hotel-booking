@@ -63,7 +63,7 @@ export default function PostDetailPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/30 to-background"></div>
         
         <div className="absolute inset-0 flex flex-col justify-end pb-24 px-4 sm:px-6 lg:px-8 max-w-[1400px] mx-auto w-full border-white/0 border">
-          <Link href="/destinations" className="inline-flex items-center gap-2 text-white/50 hover:text-white transition-all mb-10 group bg-white/5 w-fit px-4 py-2 rounded-2xl backdrop-blur-md border border-white/5">
+          <Link href="/posts" className="inline-flex items-center gap-2 text-white/50 hover:text-white transition-all mb-10 group bg-white/5 w-fit px-4 py-2 rounded-2xl backdrop-blur-md border border-white/5">
             <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1" /> Quay lại
           </Link>
           

@@ -67,7 +67,6 @@ export default function Footer() {
             <ul className="space-y-2">
               {[
                 { name: "Khách sạn nổi bật", href: "/featured-hotels" },
-                { name: "Điểm đến phổ biến", href: "/destinations" },
                 { name: "Bài viết du lịch", href: "/posts" },
                 { name: "Trở thành chủ sở hữu", href: "/partner" },
               ].map((item) => (

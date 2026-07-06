@@ -84,7 +84,6 @@ export default function Footer() {
             <h4 className="font-heading font-semibold text-lg text-foreground mb-6">Liên kết nhanh</h4>
             <ul className="space-y-3">
               <li><Link href="/featured-hotels" className="text-muted-foreground hover:text-accent-500 transition-colors">Khách sạn nổi bật</Link></li>
-              <li><Link href="/destinations" className="text-muted-foreground hover:text-accent-500 transition-colors">Điểm đến</Link></li>
               <li><Link href="/posts" className="text-muted-foreground hover:text-accent-500 transition-colors">Bài viết du lịch</Link></li>
               <li><Link href="/partner" className="text-muted-foreground hover:text-accent-500 transition-colors">Trở thành chủ sở hữu</Link></li>
             </ul>
