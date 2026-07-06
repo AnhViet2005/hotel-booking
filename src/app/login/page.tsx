@@ -142,7 +142,7 @@ export default function LoginPage() {
 
             {isLogin && (
               <div className="flex justify-end">
-                <Link href="#" className="text-xs font-bold text-accent-500 hover:text-accent-400 transition-colors tracking-wide">
+                <Link href="/forgot-password" title="forgot-password-link" className="text-xs font-bold text-accent-500 hover:text-accent-400 transition-colors tracking-wide">
                   Quên mật khẩu?
                 </Link>
               </div>

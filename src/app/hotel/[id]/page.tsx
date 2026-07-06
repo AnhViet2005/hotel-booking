@@ -186,7 +186,7 @@ export default function HotelDetails({ params }: { params: Promise<{ id: string 
   for (const item of roomItems) {
     if (galleryItems.length >= 5) break; // Limit to 5 for a clean mosaic
     galleryItems.push(item);
-    seenUrls.add(item.url);
+    if (item.url) seenUrls.add(item.url);
   }
 
   // Fill remaining slots with gallery images
@@ -333,7 +333,7 @@ export default function HotelDetails({ params }: { params: Promise<{ id: string 
             <div className="space-y-8">
               {hotel.rooms?.map(room => {
                 const isSoldOut = room.availableRooms !== undefined && room.availableRooms <= 0;
-                const quantity = selectedRooms[room.id] || 0;
+                const quantity = selectedRooms[room.id as number] || 0;
                 
                 return (
                 <div 
@@ -456,7 +456,7 @@ export default function HotelDetails({ params }: { params: Promise<{ id: string 
                           <div className="relative group">
                             <select 
                               value={quantity}
-                              onChange={(e) => updateRoomQuantity(room.id, parseInt(e.target.value))}
+                              onChange={(e) => updateRoomQuantity(room.id as number, parseInt(e.target.value))}
                               className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 rounded-lg py-3 px-4 pr-10 text-sm font-bold appearance-none cursor-pointer focus:ring-2 focus:ring-blue-500 outline-none transition-all"
                             >
                               {[...Array(Math.min(11, (room.availableRooms || 10) + 1))].map((_, i) => (
@@ -468,7 +468,7 @@ export default function HotelDetails({ params }: { params: Promise<{ id: string 
 
                           <Button 
                             disabled={quantity === 0}
-                            onClick={() => handleBooking(room.id)}
+                            onClick={() => handleBooking(room.id as number)}
                             className="w-full bg-[#006CE4] hover:bg-[#0057B8] text-white h-12 rounded-lg text-base font-bold shadow-md transition-all active:scale-[0.98]"
                           >
                             Đặt

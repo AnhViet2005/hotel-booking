@@ -6,6 +6,7 @@ export interface AuthResponse {
   fullName: string;
   role: string;
   phone: string;
+  id: number;
 }
 
 export interface RegisterRequest {
@@ -67,6 +68,38 @@ export async function loginUser(data: LoginRequest): Promise<AuthResponse> {
   }
 
   return res.json();
+}
+
+export async function forgotPassword(email: string): Promise<string> {
+  const res = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    const message = body?.message || body?.error || "Đã có lỗi xảy ra.";
+    throw new Error(message);
+  }
+
+  return res.text();
+}
+
+export async function resetPassword(token: string, newPassword: string): Promise<string> {
+  const res = await fetch(`${API_BASE_URL}/auth/reset-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token, newPassword }),
+  });
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    const message = body?.message || body?.error || "Đã có lỗi xảy ra.";
+    throw new Error(message);
+  }
+
+  return res.text();
 }
 
 export function saveAuth(data: AuthResponse) {
@@ -301,9 +334,15 @@ export async function getHotelReviews(hotelId: string | number): Promise<HotelRe
   return res.json();
 }
 
-export async function getPublicBanners(): Promise<any[]> {
-  const res = await fetch(`${API_BASE_URL}/public/banners`);
+export async function getPublicPosts(): Promise<any[]> {
+  const res = await fetch(`${API_BASE_URL}/public/posts`);
   if (!res.ok) return [];
+  return res.json();
+}
+
+export async function getPublicPostById(id: string | number): Promise<any> {
+  const res = await fetch(`${API_BASE_URL}/public/posts/${id}`);
+  if (!res.ok) throw new Error("Không tìm thấy bài viết");
   return res.json();
 }
 
@@ -311,3 +350,8 @@ export async function getPublicBanners(): Promise<any[]> {
 import { Hotel } from "@/types/hotel";
 
 
+export async function getPublicBanners(): Promise<any[]> {
+  const res = await fetch(`${API_BASE_URL}/public/banners`);
+  if (!res.ok) return [];
+  return res.json();
+}

@@ -71,7 +71,7 @@ export default function Navbar() {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link href="/destinations" className="text-foreground/80 hover:text-accent-500 font-medium transition-colors">Điểm đến</Link>
+            <Link href="/destinations" className="text-foreground/80 hover:text-accent-500 font-medium transition-colors">Bài viết</Link>
             <Link href="/search" className="text-foreground/80 hover:text-accent-500 font-medium transition-colors">Khách sạn</Link>
             <Link href="/partner" className="text-accent-500 hover:text-accent-600 font-bold transition-colors">Hợp tác với chúng tôi</Link>
           </div>
