@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { saveAuth } from "@/utils/api";
 
-export default function LoginSuccessPage() {
+function LoginSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -45,5 +45,17 @@ export default function LoginSuccessPage() {
         <p className="text-brand-400">Vui lòng chờ trong giây lát</p>
       </div>
     </div>
+  );
+}
+
+export default function LoginSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-brand-950">
+        <div className="text-white">Đang tải...</div>
+      </div>
+    }>
+      <LoginSuccessContent />
+    </Suspense>
   );
 }
