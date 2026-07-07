@@ -171,7 +171,11 @@ export default function LoginPage() {
           <Button
             type="button"
             variant="outline"
-            onClick={() => window.location.href = "http://localhost:8080/oauth2/authorization/google"}
+            onClick={() => {
+              const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
+              const authUrl = apiUrl.replace('/api', '') + "/oauth2/authorization/google";
+              window.location.href = authUrl;
+            }}
             className="w-full h-14 rounded-2xl font-bold flex items-center justify-center gap-4 bg-white/5 border-white/10 hover:bg-white/10 text-white transition-all duration-300 group"
           >
             <svg className="w-6 h-6 transition-transform duration-300 group-hover:scale-110" viewBox="0 0 24 24">

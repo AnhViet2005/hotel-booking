@@ -200,7 +200,9 @@ export default function HotelDetails({ params }: { params: Promise<{ id: string 
 
   const getImageUrl = (url?: string) => {
     if (!url) return "";
-    return url.startsWith("http") ? url : `http://localhost:8080${url}`;
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
+    const backendUrl = apiUrl.replace('/api', '');
+    return url.startsWith("http") ? url : `${backendUrl}${url}`;
   };
 
   return (
@@ -346,7 +348,7 @@ export default function HotelDetails({ params }: { params: Promise<{ id: string 
                       <div className="relative aspect-[4/3] rounded-lg overflow-hidden group mb-4">
                         {room.imageUrls && room.imageUrls.length > 0 ? (
                            <img 
-                              src={room.imageUrls[0].startsWith("http") ? room.imageUrls[0] : `http://localhost:8080${room.imageUrls[0]}`} 
+                              src={getImageUrl(room.imageUrls[0])} 
                               alt={room.name} 
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                            />
@@ -548,7 +550,7 @@ export default function HotelDetails({ params }: { params: Promise<{ id: string 
                           {review.userAvatar ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img
-                              src={review.userAvatar.startsWith("http") ? review.userAvatar : `http://localhost:8080${review.userAvatar}`}
+                              src={getImageUrl(review.userAvatar)}
                               alt={review.userName}
                               className="w-10 h-10 rounded-full object-cover flex-shrink-0 border border-border"
                             />
@@ -727,7 +729,7 @@ export default function HotelDetails({ params }: { params: Promise<{ id: string 
                   <>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img 
-                      src={viewingRoom.imageUrls[currentImageIndex].startsWith("http") ? viewingRoom.imageUrls[currentImageIndex] : `http://localhost:8080${viewingRoom.imageUrls[currentImageIndex]}`} 
+                      src={getImageUrl(viewingRoom.imageUrls[currentImageIndex])} 
                       alt={viewingRoom.name}
                       className="w-full h-full object-cover transition-all duration-500"
                     />

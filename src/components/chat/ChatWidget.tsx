@@ -63,7 +63,9 @@ export default function ChatWidget({ receiverId, receiverName, currentUserId, cu
 
   const connect = () => {
     const token = getToken();
-    const socket = new SockJS("http://localhost:8080/ws");
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
+    const wsUrl = apiUrl.replace('/api', '') + "/ws";
+    const socket = new SockJS(wsUrl);
     
     const client = new Client({
       webSocketFactory: () => socket,
