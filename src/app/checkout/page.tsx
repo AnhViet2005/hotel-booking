@@ -93,7 +93,7 @@ function CheckoutContent() {
 
       const bookingId = await createBooking({
         hotelId: Number(hotel.id),
-        rooms: selectedRooms.map(s => ({ roomTypeId: s.room.id, quantity: s.quantity })),
+        rooms: selectedRooms.map(s => ({ roomTypeId: Number(s.room.id), quantity: s.quantity })),
         checkIn: checkIn || today.toISOString().split("T")[0],
         checkOut: checkOut || tomorrow.toISOString().split("T")[0],
         guestName: user?.fullName || "Khách",
@@ -109,7 +109,8 @@ function CheckoutContent() {
 
       const depositAmount = Math.round(total * 0.3);
       const returnUrl = encodeURIComponent(`${window.location.origin}/payment-result`);
-      const res = await fetch(`http://localhost:4000/payment?amount=${depositAmount}&orderInfo=Booking_${bookingId}&returnUrl=${returnUrl}`);
+      const vnpayUrl = process.env.NEXT_PUBLIC_VNPAY_URL || "http://localhost:4000";
+      const res = await fetch(`${vnpayUrl}/payment?amount=${depositAmount}&orderInfo=Booking_${bookingId}&returnUrl=${returnUrl}`);
       const data = await res.json();
       if (data.url) {
         window.location.href = data.url;
