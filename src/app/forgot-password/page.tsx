@@ -29,6 +29,22 @@ export default function ForgotPasswordPage() {
     }
   };
 
+  const renderMessageContent = (text: string) => {
+    if (!text) return `Chúng tôi đã gửi hướng dẫn khôi phục mật khẩu đến ${email}. Vui lòng kiểm tra hộp thư đến của bạn.`;
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts = text.split(urlRegex);
+    return parts.map((part, index) => {
+      if (part.match(urlRegex)) {
+        return (
+          <a key={index} href={part} className="block mt-4 w-full text-center py-3 bg-accent-500 hover:bg-accent-600 text-white font-black rounded-xl shadow-lg transition-all" target="_blank" rel="noopener noreferrer">
+            Đặt lại mật khẩu trực tiếp
+          </a>
+        );
+      }
+      return <span key={index}>{part}</span>;
+    });
+  };
+
   return (
     <div className="min-h-screen bg-muted/30 flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-background rounded-[40px] shadow-2xl border border-border overflow-hidden">
@@ -76,9 +92,9 @@ export default function ForgotPasswordPage() {
                 <CheckCircle2 className="w-10 h-10 text-green-500" />
               </div>
               <h2 className="text-2xl font-black text-foreground mb-4">Kiểm tra Email!</h2>
-              <p className="text-muted-foreground mb-8">
-                Chúng tôi đã gửi hướng dẫn khôi phục mật khẩu đến <strong>{email}</strong>. Vui lòng kiểm tra hộp thư đến của bạn.
-              </p>
+              <div className="text-muted-foreground mb-8 text-sm whitespace-pre-line text-left bg-muted/30 p-5 rounded-2xl border border-border">
+                {renderMessageContent(message)}
+              </div>
               <button
                 onClick={() => setSubmitted(false)}
                 className="text-accent-500 font-bold hover:underline"
