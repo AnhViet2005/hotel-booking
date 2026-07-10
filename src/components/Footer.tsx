@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { Mail, Phone, MapPin } from "lucide-react";
 import Link from "next/link";
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "https://hotel-backend-production-222c.up.railway.app/api";
+
 interface ContactInfo {
   id?: number;
   email: string;
@@ -22,8 +24,7 @@ export default function Footer() {
   useEffect(() => {
     const fetchContactInfo = async () => {
       try {
-        import { API_BASE_URL } from "../utils/api";
-const apiUrl = API_BASE_URL;
+        const apiUrl = BACKEND_URL;
         const res = await fetch(`${apiUrl}/contact-info`);
         if (res.ok) {
           const data = await res.json();
