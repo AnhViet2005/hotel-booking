@@ -25,7 +25,7 @@ export default function Footer() {
   useEffect(() => {
     const fetchContactInfo = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
+        const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "https://hotel-backend-production-222c.up.railway.app/api";
         const res = await fetch(`${apiUrl}/contact-info`);
         if (res.ok) {
           const data = await res.json();

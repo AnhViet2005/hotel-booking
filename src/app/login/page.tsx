@@ -172,8 +172,8 @@ export default function LoginPage() {
             type="button"
             variant="outline"
             onClick={() => {
-              const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
-              const authUrl = apiUrl.replace('/api', '') + "/oauth2/authorization/google";
+              const backendBase = (process.env.NEXT_PUBLIC_BACKEND_URL || "https://hotel-backend-production-222c.up.railway.app/api").replace('/api', '');
+              const authUrl = backendBase + "/oauth2/authorization/google";
               window.location.href = authUrl;
             }}
             className="w-full h-14 rounded-2xl font-bold flex items-center justify-center gap-4 bg-white/5 border-white/10 hover:bg-white/10 text-white transition-all duration-300 group"

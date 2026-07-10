@@ -11,7 +11,7 @@ export default function BlogPostsPage() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
+        const apiUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "https://hotel-backend-production-222c.up.railway.app/api";
         const response = await fetch(`${apiUrl}/public/posts`);
         const data = await response.json();
         setPosts(data);

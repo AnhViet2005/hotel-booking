@@ -198,11 +198,13 @@ export default function HotelDetails({ params }: { params: Promise<{ id: string 
     }
   }
 
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "https://hotel-backend-production-222c.up.railway.app";
   const getImageUrl = (url?: string) => {
     if (!url) return "";
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
-    const backendUrl = apiUrl.replace('/api', '');
-    return url.startsWith("http") ? url : `${backendUrl}${url}`;
+    if (url.startsWith("http")) return url;
+    // Đảm bảo luôn trỏ về Railway backend, không bao giờ về Vercel
+    const base = BACKEND_URL.replace(/\/api$/, "");
+    return `${base}${url.startsWith("/") ? "" : "/"}${url}`;
   };
 
   return (

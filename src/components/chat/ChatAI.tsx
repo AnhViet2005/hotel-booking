@@ -293,7 +293,7 @@ export default function ChatAI() {
                             {room.imageUrls?.[0] && (
                               <div className="h-32 w-full">
                                 <img 
-                                  src={room.imageUrls[0].startsWith("http") ? room.imageUrls[0] : `${(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api').replace('/api', '')}${room.imageUrls[0]}`} 
+                                  src={room.imageUrls[0].startsWith("http") ? room.imageUrls[0] : `${(process.env.NEXT_PUBLIC_BACKEND_URL || 'https://hotel-backend-production-222c.up.railway.app/api').replace('/api', '')}${room.imageUrls[0]}`} 
                                   alt={room.name}
                                   className="w-full h-full object-cover"
                                 />
@@ -321,7 +321,7 @@ export default function ChatAI() {
                              <div className="flex gap-2 p-2">
                                <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
                                   <img 
-                                    src={hotel.image?.startsWith("http") ? hotel.image : `${(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api').replace('/api', '')}${hotel.image}`} 
+                                    src={hotel.image?.startsWith("http") ? hotel.image : `${(process.env.NEXT_PUBLIC_BACKEND_URL || 'https://hotel-backend-production-222c.up.railway.app/api').replace('/api', '')}${hotel.image}`} 
                                     alt={hotel.name}
                                     className="w-full h-full object-cover group-hover/item:scale-110 transition-transform duration-500"
                                   />

@@ -63,8 +63,8 @@ export default function ChatWidget({ receiverId, receiverName, currentUserId, cu
 
   const connect = () => {
     const token = getToken();
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
-    const wsUrl = apiUrl.replace('/api', '') + "/ws";
+    const backendBase = (process.env.NEXT_PUBLIC_BACKEND_URL || "https://hotel-backend-production-222c.up.railway.app/api").replace('/api', '');
+    const wsUrl = backendBase + "/ws";
     const socket = new SockJS(wsUrl);
     
     const client = new Client({
