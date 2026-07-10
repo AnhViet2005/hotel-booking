@@ -2,6 +2,7 @@ import Image from "next/image";
 import { MapPin, Check } from "lucide-react";
 import { Hotel, Room } from "@/types/hotel";
 import { formatCurrency } from "@/utils/format";
+import { getImageUrl } from "@/utils/image";
 
 interface BookingSummaryProps {
   hotel: Hotel;
@@ -19,12 +20,8 @@ export default function BookingSummary({ hotel, room, tax, total, nights, quanti
       
       <div className="mb-8">
         <div className="relative h-48 rounded-2xl overflow-hidden mb-6 group">
-          {hotel.image && hotel.image.startsWith("http://localhost") ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={hotel.image} alt={hotel.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-          ) : (
-            <Image src={hotel.image || "https://images.unsplash.com/photo-1542314831-c6a4d14d8c53?w=800&q=80"} alt={hotel.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
-          )}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={getImageUrl(hotel.image, "https://images.unsplash.com/photo-1542314831-c6a4d14d8c53?w=800&q=80")} alt={hotel.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
         </div>
         <h4 className="font-heading font-bold text-xl text-card-foreground mb-2">{hotel.name}</h4>
         <div className="flex items-center text-sm text-muted-foreground mb-6">

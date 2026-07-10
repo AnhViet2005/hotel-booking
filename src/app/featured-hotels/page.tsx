@@ -6,6 +6,7 @@ import Link from "next/link";
 import { formatCurrency } from "@/utils/format";
 import { getPublicHotels } from "@/utils/api";
 import type { Hotel } from "@/types/hotel";
+import { getImageUrl } from "@/utils/image";
 
 interface FeaturedHotel extends Hotel {
   badge?: string;
@@ -76,8 +77,7 @@ export default function FeaturedHotelsPage() {
               <Link href={`/hotel/${hotel.id}`} key={hotel.id}
                 className="group bg-card rounded-3xl overflow-hidden border border-border shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                 <div className="relative h-52 overflow-hidden">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={hotel.image || "https://via.placeholder.com/600x400"} alt={hotel.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                  <img src={getImageUrl(hotel.image, "https://via.placeholder.com/600x400")} alt={hotel.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                   <span className="absolute top-3 left-3 bg-accent-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow">{hotel.badge}</span>
                 </div>
                 <div className="p-5">

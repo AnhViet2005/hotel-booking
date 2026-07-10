@@ -6,6 +6,7 @@ import { Hotel as HotelIcon, CalendarCheck, Settings, ArrowRight, Loader2 } from
 import Link from "next/link";
 import { getMyBookings, getUser, UserBooking } from "@/utils/api";
 import { formatCurrency } from "@/utils/format";
+import { getImageUrl } from "@/utils/image";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -115,7 +116,8 @@ export default function DashboardPage() {
               <div key={b.id} className="flex items-center gap-4 p-4 rounded-2xl bg-muted/50 hover:bg-muted transition-colors">
                 <div className="w-12 h-12 rounded-xl overflow-hidden bg-muted flex-shrink-0">
                   {b.hotelImage ? (
-                    <img src={b.hotelImage} alt={b.hotelName} className="w-full h-full object-cover" />
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={getImageUrl(b.hotelImage)} alt={b.hotelName} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
                       <HotelIcon className="w-6 h-6 text-muted-foreground/30" />

@@ -4,6 +4,7 @@ import { Calendar, MapPin, Hotel as HotelIcon } from "lucide-react";
 import { UserBooking } from "@/utils/api";
 import { Button } from "@/components/ui/Button";
 import { formatCurrency } from "@/utils/format";
+import { getImageUrl } from "@/utils/image";
 
 interface BookingHistoryProps {
   bookings: UserBooking[];
@@ -17,12 +18,8 @@ export default function BookingHistory({ bookings }: BookingHistoryProps) {
           <div key={booking.id} className="bg-card rounded-[32px] overflow-hidden shadow-xl border border-border flex flex-col md:flex-row group hover:border-accent-500/30 transition-all delay-75">
             <div className="relative w-full md:w-64 h-48 md:h-auto overflow-hidden">
               {booking.hotelImage ? (
-                booking.hotelImage.startsWith("http://localhost") ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={booking.hotelImage} alt={booking.hotelName} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                ) : (
-                  <Image src={booking.hotelImage} alt={booking.hotelName} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
-                )
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={getImageUrl(booking.hotelImage)} alt={booking.hotelName} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
               ) : (
                 <div className="w-full h-full bg-muted flex items-center justify-center">
                   <HotelIcon className="w-14 h-14 text-muted-foreground/20" />

@@ -1,16 +1,18 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Star, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Hotel } from "@/types/hotel";
 import { formatCurrency } from "@/utils/format";
+import { getImageUrl } from "@/utils/image";
 
 interface HotelCardProps {
   hotel: Pick<Hotel, "id" | "name" | "location" | "price" | "rating" | "reviews" | "image">;
 }
+
+const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1542314831-c6a4d14d8c53?w=800&q=80";
 
 export default function HotelCard({ hotel }: HotelCardProps) {
   const searchParams = useSearchParams();
@@ -20,22 +22,12 @@ export default function HotelCard({ hotel }: HotelCardProps) {
     <Link href={`/hotel/${hotel.id}${queryString}`} className="block group h-full">
       <div className="bg-card rounded-3xl overflow-hidden border border-border shadow-sm hover:shadow-2xl hover:shadow-accent-500/10 transition-all duration-500 cursor-pointer h-full flex flex-col group/card">
         <div className="relative h-72 overflow-hidden">
-          {hotel.image && hotel.image.startsWith("http://localhost") ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={hotel.image}
-              alt={hotel.name}
-              className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-700"
-            />
-          ) : (
-            <Image 
-              src={hotel.image || "https://images.unsplash.com/photo-1542314831-c6a4d14d8c53?w=800&q=80"} 
-              alt={hotel.name} 
-              fill 
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-cover group-hover/card:scale-110 transition-transform duration-700" 
-            />
-          )}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={getImageUrl(hotel.image, FALLBACK_IMAGE)}
+            alt={hotel.name}
+            className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-700"
+          />
           <div className="absolute top-4 right-4 bg-card/90 backdrop-blur rounded-2xl px-3 py-1.5 flex items-center gap-1.5 shadow-lg border border-border">
             <Star className="w-4 h-4 text-accent-500 fill-accent-500" />
             <span className="font-bold text-sm text-card-foreground">{hotel.rating}</span>

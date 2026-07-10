@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { getMyBookings, getUser, payRemainingBooking, cancelBooking, UserBooking, createReview } from "@/utils/api";
 import { formatCurrency } from "@/utils/format";
+import { getImageUrl } from "@/utils/image";
 import { Star } from "lucide-react";
 
 const STATUS_MAP: Record<string, { label: string; color: string }> = {
@@ -231,8 +232,9 @@ export default function BookingsPage() {
                 {/* Hotel Image */}
                 <div className="relative w-full md:w-64 h-48 md:h-auto overflow-hidden flex-shrink-0">
                   {booking.hotelImage ? (
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img
-                      src={booking.hotelImage}
+                      src={getImageUrl(booking.hotelImage)}
                       alt={booking.hotelName}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                     />
