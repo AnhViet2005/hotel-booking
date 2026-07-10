@@ -2,11 +2,17 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
         hostname: "images.unsplash.com",
         pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "hotel-backend-production-222c.up.railway.app",
+        pathname: "/uploads/**",
       },
       {
         protocol: "http",
